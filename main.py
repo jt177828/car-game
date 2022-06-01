@@ -51,7 +51,8 @@ while game:
     # car()
 
     key = pg.key.get_pressed()
-
+    if key[pg.K_ESCAPE]:
+        pg.quit()
     if (key[pg.K_LEFT] or key[pg.K_a]) and carX >= 261:
         carX -= 1
     if (key[pg.K_RIGHT] or key[pg.K_d]) and carX <= (width - 299):
