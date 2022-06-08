@@ -1,4 +1,5 @@
 import pygame as pg
+import random
 
 width = 800
 height = 600
@@ -22,10 +23,27 @@ carW = 40
 carL = 100
 carX = 390
 carY = 420
+obstaclesX = 20
 
+# import images
+car = pg.image.load('car.png')
+game = pg.image.load('game.png')
+ttt = pg.image.load('2022.gif')
+
+count = 0
+
+def menu():
+    display.fill(black)
+    display.blit(car, (20, 40))
+    display.blit(game, (350, 40))
+    display.blit(ttt, (600, 40))
+
+    pg.display.update()
 
 def gameWindow():
     display.fill(black)
+
+    obstacles()
 
     pg.draw.rect(display, grey, (240, 0, 20, height))  # draw left curb
     # draw right curb
@@ -41,14 +59,30 @@ def gameWindow():
 
     pg.draw.rect(display, color, (carX, carY, carW, carL))  # car
 
+    
     pg.display.update()
 
+def obstacles():
+    if count % 8 == 0:
+        obstaclesX = random.randint(0, 7)
 
-game = True
-while game:
+inMenu = True
+while inMenu:
+    pg.event.clear()
+    menu()
+
+    key = pg.key.get_pressed()
+    if key[pg.K_ESCAPE]:
+        pg.quit()
+
+inGame = True
+while inGame:
     pg.event.clear()
     gameWindow()
     # car()
+    obstacles()
+    pg.draw.rect(display, white, (obstaclesX * 40 + 240, 0, 40, 40))
+
 
     key = pg.key.get_pressed()
     if key[pg.K_ESCAPE]:
@@ -57,6 +91,8 @@ while game:
         carX -= 1
     if (key[pg.K_RIGHT] or key[pg.K_d]) and carX <= (width - 299):
         carX += 1
+
+    count += 1
 
     pg.time.delay(2)
     pg.display.update()
