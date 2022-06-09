@@ -1,4 +1,3 @@
-from inspect import CO_VARKEYWORDS
 import pygame as pg
 import random
 
