@@ -1,3 +1,4 @@
+from inspect import CO_VARKEYWORDS
 import pygame as pg
 import random
 
@@ -31,6 +32,8 @@ game = pg.image.load('game.png').convert_alpha()
 ttt = pg.image.load('2022.gif').convert_alpha()
 button = pg.image.load('button.png').convert_alpha()
 
+button = pg.transform.scale(button, (240, 93))
+
 count = 0
 
 
@@ -38,14 +41,34 @@ class Button():
     def __init__(self, x, y, image):
         self.image = image
         self.rect = self.image.get_rect()
-        self.rect.coords = (x, y)
+
 
     def draw(self):
         display.blit(self.image, (self.rect.x, self.rect.y))
 
-
 easyButton = Button(200, 500, button)
 hardButton = Button(400, 500, button)
+
+class Obstacle(object):
+    def __init__(self, x, y, speed, w, h, colour):
+        self.x = x
+        self.y = y
+        self.speed = speed
+        self.w = w
+        self.h = h
+        self.colour = colour
+
+    def draw(self):
+        pg.draw.rect(display, self.colour, (self.x, self.y, self.w, self.h))
+
+    def moveDown(self):
+        self.y += self.speed
+        
+rain = Obstacle(width/2,random.randint(1,1),2,30,30,(255,255,255))
+
+rain.draw()
+    
+
 
 
 def menu():
