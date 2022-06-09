@@ -26,19 +26,39 @@ carY = 420
 obstaclesX = 20
 
 # import images
-car = pg.image.load('car.png')
-game = pg.image.load('game.png')
-ttt = pg.image.load('2022.gif')
+car = pg.image.load('car.png').convert_alpha()
+game = pg.image.load('game.png').convert_alpha()
+ttt = pg.image.load('2022.gif').convert_alpha()
+button = pg.image.load('button.png').convert_alpha()
 
 count = 0
 
+
+class Button():
+    def __init__(self, x, y, image):
+        self.image = image
+        self.rect = self.image.get_rect()
+        self.rect.coords = (x, y)
+
+    def draw(self):
+        display.blit(self.image, (self.rect.x, self.rect.y))
+
+
+easyButton = Button(200, 500, button)
+hardButton = Button(400, 500, button)
+
+
 def menu():
     display.fill(black)
-    display.blit(car, (20, 40))
-    display.blit(game, (350, 40))
-    display.blit(ttt, (600, 40))
+    display.blit(car, (20, 30))
+    display.blit(game, (250, 10))
+    display.blit(ttt, (550, 10))
+
+    easyButton.draw()
+    hardButton.draw()
 
     pg.display.update()
+
 
 def gameWindow():
     display.fill(black)
@@ -59,12 +79,13 @@ def gameWindow():
 
     pg.draw.rect(display, color, (carX, carY, carW, carL))  # car
 
-    
     pg.display.update()
+
 
 def obstacles():
     if count % 8 == 0:
         obstaclesX = random.randint(0, 7)
+
 
 inMenu = True
 while inMenu:
@@ -82,7 +103,6 @@ while inGame:
     # car()
     obstacles()
     pg.draw.rect(display, white, (obstaclesX * 40 + 240, 0, 40, 40))
-
 
     key = pg.key.get_pressed()
     if key[pg.K_ESCAPE]:
