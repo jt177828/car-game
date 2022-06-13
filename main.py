@@ -1,22 +1,23 @@
-import pygame as pg
+import pygame
 import random
 
-width = 800
-height = 600
+WIDTH = 800
+HEIGHT = 600
 
-pg.init()
-display = pg.display.set_mode((width, height))
+pygame.init()
+display = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption('Car Game')
 
 # colours
-red = (255, 102, 102)
-blue = (128, 191, 255)
-yellow = (230, 184, 0)
-green = (0, 150, 59)
-black = (26, 26, 26)
-white = (242, 242, 242)
-grey = (179, 179, 179)
+RED = (255, 102, 102)
+BLUE = (128, 191, 255)
+YELLOW = (230, 184, 0)
+GREEN = (0, 150, 59)
+BLACK = (26, 26, 26)
+WHITE = (242, 242, 242)
+GREY = (179, 179, 179)
 
-color = red
+color = RED
 
 # car dimensions
 carW = 40
@@ -26,115 +27,95 @@ carY = 420
 obstaclesX = 20
 
 # import images
-car = pg.image.load('car.png').convert_alpha()
-game = pg.image.load('game.png').convert_alpha()
-ttt = pg.image.load('2022.gif').convert_alpha()
-button = pg.image.load('button.png').convert_alpha()
-
-button = pg.transform.scale(button, (240, 93))
-
-count = 0
+car = pygame.image.load('images/car.png').convert_alpha()
+game = pygame.image.load('images/game.png').convert_alpha()
+ttt = pygame.image.load('images/2022.gif').convert_alpha()
+easyButton = pygame.image.load('images/easybutton.png').convert_alpha()
+hardButton = pygame.image.load('images/hardbutton.png').convert_alpha()
 
 
 class Button():
     def __init__(self, x, y, image):
         self.image = image
         self.rect = self.image.get_rect()
-
+        self.rect.topleft = (x, y)
 
     def draw(self):
+        action = False
         display.blit(self.image, (self.rect.x, self.rect.y))
+        position = pygame.mouse.get_pos()
 
-easyButton = Button(200, 500, button)
-hardButton = Button(400, 500, button)
+        if self.rect.collidepoint(position):
+            if pygame.mouse.get_pressed()[0] == 1:
+                print("d")
 
-class Obstacle(object):
-    def __init__(self, x, y, speed, w, h, colour):
-        self.x = x
-        self.y = y
-        self.speed = speed
-        self.w = w
-        self.h = h
-        self.colour = colour
 
-    def draw(self):
-        pg.draw.rect(display, self.colour, (self.x, self.y, self.w, self.h))
-
-    def moveDown(self):
-        self.y += self.speed
-        
-rain = Obstacle(width/2,random.randint(1,1),2,30,30,(255,255,255))
-
-rain.draw()
-    
-
+easy_button = Button(100, 400, easyButton)
+hard_button = Button(500, 400, hardButton)
 
 
 def menu():
-    display.fill(black)
+    display.fill(BLACK)
     display.blit(car, (20, 30))
     display.blit(game, (250, 10))
     display.blit(ttt, (550, 10))
 
-    easyButton.draw()
-    hardButton.draw()
-
-    pg.display.update()
+    easy_button.draw()
+    hard_button.draw()
 
 
 def gameWindow():
-    display.fill(black)
+    display.fill(BLACK)
 
-    obstacles()
-
-    pg.draw.rect(display, grey, (240, 0, 20, height))  # draw left curb
+    pygame.draw.rect(display, GREY, (240, 0, 20, HEIGHT))  # draw left curb
     # draw right curb
-    pg.draw.rect(display, grey, (width - 260, 0, 20, height))
+    pygame.draw.rect(display, GREY, (WIDTH - 260, 0, 20, HEIGHT))
 
     for i in range(10):
-        pg.draw.rect(display, yellow, ((width / 2 - 20), 80 *
-                     (i - 1), 20, 40))  # draw lines on the road
+        pygame.draw.rect(display, YELLOW, ((WIDTH / 2 - 20), 80 *
+                                           (i - 1), 20, 40))  # draw lines on the road
         # draw trees on the left
-        pg.draw.rect(display, green, (200, 80 * (i - 1), 30, 30))
+        pygame.draw.rect(display, GREEN, (200, 80 * (i - 1), 30, 30))
+
         # draw trees on the right
-        pg.draw.rect(display, green, (width - 220, 80 * (i - 1), 30, 30))
+        pygame.draw.rect(display, GREEN, (WIDTH - 220, 80 * (i - 1), 30, 30))
 
-    pg.draw.rect(display, color, (carX, carY, carW, carL))  # car
-
-    pg.display.update()
-
-
-def obstacles():
-    if count % 8 == 0:
-        obstaclesX = random.randint(0, 7)
+    pygame.draw.rect(display, color, (carX, carY, carW, carL))  # car
 
 
 inMenu = True
 while inMenu:
-    pg.event.clear()
+    # pygame.event.clear()
     menu()
 
-    key = pg.key.get_pressed()
-    if key[pg.K_ESCAPE]:
-        pg.quit()
+    key = pygame.key.get_pressed()
+    if key[pygame.K_ESCAPE]:
+        pygame.quit()
+
+    for event in pygame.event.get():
+
+        if event.type == pygame.QUIT:
+            inMenu = False
+
+    pygame.display.update()
 
 inGame = True
 while inGame:
-    pg.event.clear()
     gameWindow()
-    # car()
-    obstacles()
-    pg.draw.rect(display, white, (obstaclesX * 40 + 240, 0, 40, 40))
+    pygame.draw.rect(display, WHITE, (obstaclesX * 40 + 240, 0, 40, 40))
 
-    key = pg.key.get_pressed()
-    if key[pg.K_ESCAPE]:
-        pg.quit()
-    if (key[pg.K_LEFT] or key[pg.K_a]) and carX >= 261:
+    key = pygame.key.get_pressed()
+    if key[pygame.K_ESCAPE]:
+        pygame.quit()
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            inGame = False
+
+    if (key[pygame.K_LEFT] or key[pygame.K_a]) and carX >= 261:
         carX -= 1
-    if (key[pg.K_RIGHT] or key[pg.K_d]) and carX <= (width - 299):
+    if (key[pygame.K_RIGHT] or key[pygame.K_d]) and carX <= (WIDTH - 299):
         carX += 1
 
-    count += 1
-
-    pg.time.delay(2)
-    pg.display.update()
+    pygame.time.delay(2)
+    pygame.display.update()
